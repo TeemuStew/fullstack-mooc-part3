@@ -2,7 +2,16 @@ const express = require('express');
 const morgan = require('morgan');
 const app = express();
 
-app.use(morgan('tiny'));
+// Luo uusi token, joka näyttää POST-pyynnön mukana tulevan datan
+morgan.token('postData', (req, res) => {
+  if (req.method === 'POST') {
+    return JSON.stringify(req.body);
+  }
+  return '';
+});
+
+// Käytä morgania omalla tokenilla
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :postData'));
 
 let persons = [
   {
