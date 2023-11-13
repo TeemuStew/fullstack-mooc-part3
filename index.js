@@ -1,5 +1,8 @@
 const express = require('express');
+const morgan = require('morgan');
 const app = express();
+
+app.use(morgan('tiny'));
 
 let persons = [
   {
@@ -52,8 +55,12 @@ app.post('/api/persons', (req, res) => {
     return res.status(400).json({ error: 'Name or number is missing' });
   }
 
+  if (persons.some(person => person.name === body.name)) {
+    return res.status(400).json({ error: 'Name must be unique' });
+  }
+
   const newPerson = {
-    id: Math.floor(Math.random() * 100), 
+    id: Math.floor(Math.random() * 100),
     name: body.name,
     number: body.number
   };
